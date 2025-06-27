@@ -1,6 +1,6 @@
 public enum ListName {
     FAVORITES("Favoritas"),
-    READ("Lidas"),
+    READ("Já lidas"),
     TO_READ("Para ler depois");
 
     private final String label;
