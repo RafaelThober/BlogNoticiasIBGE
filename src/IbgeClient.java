@@ -1,32 +1,33 @@
 import com.google.gson.Gson;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 public class IbgeClient {
 
     private static final String BASE_URL = "https://servicodados.ibge.gov.br/api/v3/noticias";
     private final Gson gson = new Gson();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     public List<Noticia> searchNews(String term) {
         try {
             String encoded = java.net.URLEncoder.encode(term, "UTF-8");
-            URL url = new URL(BASE_URL + "?busca=" + encoded);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "?busca=" + encoded))
+                .GET()
+                .build();
 
-            try (InputStreamReader reader = new InputStreamReader(conn.getInputStream())) {
-                IbgeResponse response = gson.fromJson(reader, IbgeResponse.class);
-                return response != null && response.items != null ? response.items : List.of();
-            }
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            IbgeResponse ibgeResponse = gson.fromJson(response.body(), IbgeResponse.class);
+            return ibgeResponse != null && ibgeResponse.items != null ? ibgeResponse.items : List.of();
         } catch (Exception e) {
             System.out.println("❌ Erro ao buscar notícias: " + e.getMessage());
         }
         return List.of();
     }
 
-    // Wrapper para a resposta da API
     private static class IbgeResponse {
         List<Noticia> items;
     }

@@ -7,9 +7,9 @@ public class ConsoleApp {
     private static final BlogService service = new BlogService();
 
     public static void main(String[] args) {
-        System.out.println("=======================================");
-        System.out.println(" Bem-vindo ao Gerenciador de Notícias IBGE");
-        System.out.println("=======================================");
+        System.out.println("===========================================");
+        System.out.println(" Bem-vindo ao Gerenciador de Notícias IBGE ");
+        System.out.println("===========================================");
         System.out.print("Por favor, digite seu apelido: ");
         nickname = scanner.nextLine().trim();
 
